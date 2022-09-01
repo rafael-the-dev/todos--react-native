@@ -4,8 +4,16 @@ import mobileLightBg from "./assets/images/bg-mobile-light.jpg";
 import iconMoon from "./assets/images/icon-moon.svg";
 
 import Form from './components/form';
+import { useFetch } from './hooks';
 
 export default function App() {
+    const { data, error, loading } = useFetch({ 
+        autoFetch: true, 
+        url: "https://pro-todos.netlify.app/api/todos" 
+    });
+
+    const todos = data?.todos ?? [];
+    console.log(todos)
     return (
         <View style={styles.container}>
             <ImageBackground 
