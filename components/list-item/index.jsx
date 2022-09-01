@@ -10,8 +10,7 @@ const ListItem = ({ isComplete, task }) => {
             <Checkbox
                 style={styles.checkbox}
                 value={isComplete}
-                onValueChange={setIsChecked}
-                color={isChecked ? '#4630EB' : undefined}
+                color={isComplete ? '#4630EB' : undefined}
             />
             <Text style={styles.text}>
                 { task }
@@ -26,14 +25,19 @@ const ListItem = ({ isComplete, task }) => {
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
+        backgroundColor: "#FFF",
         borderColor: "#E3E4F1",
+        borderRadius: 5,
         borderStyle: "solid",
-        borderWidth: 1,
-        flexDirection: "row"
+        borderBottomWidth: 1,
+        flexDirection: "row",
+        paddingHorizontal: '5%',
+        paddingVertical: 10
     },
     text: {
         flexGrow: 1,
-        marginHorizontal: 6
+        fontSize: "1.1rem",
+        marginHorizontal: 10
     }
 })
 
