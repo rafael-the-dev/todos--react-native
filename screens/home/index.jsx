@@ -7,20 +7,23 @@ import iconMoon from "../../assets/images/icon-moon.svg";
 import iconSun from "../../assets/images/icon-sun.svg";
 
 import { ThemeContext } from '../../context';
+import { colors } from "../../styles/colors"
 
 import Form from '../../components/form';
 import ListItem from '../../components/list-item';
 import { useFetch } from '../../hooks';
 
+const { dark } = colors;
+
 const Home = () => {
     const id = useId();
     const { isLightTheme, toggleTheme } = useContext(ThemeContext);
-    console.log(isLightTheme)
 
     const { data, error, loading } = useFetch({ 
         autoFetch: true, 
         url: "https://pro-todos.netlify.app/api/todos" 
     });
+
 
     const todos = data?.todos ?? [];
 
@@ -28,7 +31,7 @@ const Home = () => {
     const getItem = useCallback(({ item }) => <ListItem { ...item } />, [])
     
     return (
-        <View style={styles.container}>
+        <View style={[ styles.container, isLightTheme ? styles.containerLight : styles.containerDark ]}>
             <ImageBackground 
                 source={{ uri: isLightTheme ? mobileLightBg : mobileDarkBg }}
                 style={styles.bgImage}
@@ -59,8 +62,13 @@ const Home = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#F7F7F8',
+        flex: 1
+    },
+    containerLight: {
+        backgroundColor: '#F7F7F8'
+    },
+    containerDark: {
+        backgroundColor: dark
     },
     bgImage: {
         height: 220,
