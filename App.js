@@ -3,6 +3,8 @@ import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from
 import mobileLightBg from "./assets/images/bg-mobile-light.jpg";
 import iconMoon from "./assets/images/icon-moon.svg";
 
+import Form from './components/form';
+
 export default function App() {
     return (
         <View style={styles.container}>
@@ -19,6 +21,7 @@ export default function App() {
                         />
                     </TouchableOpacity>
                 </View>
+                <Form />
             </ImageBackground>
         </View>
     );
