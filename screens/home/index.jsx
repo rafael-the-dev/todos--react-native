@@ -14,7 +14,7 @@ import Form from '../../components/form';
 import ListItem from '../../components/list-item';
 import Tab from '../../components/tab';
 
-const { dark, darkBlue } = colors;
+const { dark, darkBlue, gray } = colors;
 
 const Home = () => {
     const [ tab, setTab ] = useState("ALL");
@@ -77,9 +77,9 @@ const Home = () => {
                         />
                     </View>
                     <View style={[ styles.item, styles.row, itemBg ]}>
-                        <Text>{ leftTodos } item{ leftTodos > 1 ? "s" : ""} left</Text>
+                        <Text style={styles.grayColor}>{ leftTodos } item{ leftTodos > 1 ? "s" : ""} left</Text>
                         <TouchableOpacity>
-                            <Text>Clear Completed</Text>
+                            <Text style={styles.grayColor}>Clear Completed</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={[ styles.item, styles.tabsContainer, itemBg ]}>
@@ -159,6 +159,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         marginTop: "2rem"
+    },
+    grayColor: {
+        color: gray
     }
 });
 
