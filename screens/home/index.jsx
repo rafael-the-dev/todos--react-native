@@ -49,11 +49,13 @@ const Home = () => {
             </ImageBackground>
             <View style={styles.todosContainer}>
                 <View style={styles.todosListContainer}>
-                    <FlatList
-                        data={todos}
-                        keyExtractor={getKey}
-                        renderItem={getItem} 
-                    />
+                    <View style={styles.flatListContainer}>
+                        <FlatList
+                            data={todos}
+                            keyExtractor={getKey}
+                            renderItem={getItem} 
+                        />
+                    </View>
                 </View>
             </View>
         </View>
@@ -88,8 +90,8 @@ const styles = StyleSheet.create({
         textTransform: "uppercase"
     },
     themeIcon: {
-        height: 15,
-        width: 15
+        height: 20,
+        width: 20
     },
     todosContainer: {
         position: "relative"
@@ -100,6 +102,10 @@ const styles = StyleSheet.create({
         top: 0,
         transform: "translate(0, -40%)",
         width: "90%"
+    },
+    flatListContainer: {
+        borderRadius: 5,
+        overflow: "hidden"
     }
 });
 
