@@ -1,4 +1,4 @@
-import { useCallback, useContext, useId } from 'react';
+import { useCallback, useContext, useId, useMemo, useState } from 'react';
 import { Image, ImageBackground, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import mobileLightBg from "../../assets/images/bg-mobile-light.jpg";
@@ -7,15 +7,17 @@ import iconMoon from "../../assets/images/icon-moon.svg";
 import iconSun from "../../assets/images/icon-sun.svg";
 
 import { ThemeContext } from '../../context';
-import { colors } from "../../styles/colors"
+import { colors } from "../../styles/colors";
+import { useFetch } from '../../hooks';
 
 import Form from '../../components/form';
 import ListItem from '../../components/list-item';
-import { useFetch } from '../../hooks';
+import Tab from '../../components/tab';
 
-const { dark } = colors;
+const { dark, darkBlue } = colors;
 
 const Home = () => {
+    const [ tab, setTab ] = useState("ALL");
     const id = useId();
     const { isLightTheme, toggleTheme } = useContext(ThemeContext);
 
@@ -25,10 +27,28 @@ const Home = () => {
     });
 
 
-    const todos = data?.todos ?? [];
+    const todos = useMemo(() => data?.todos ?? [], [ data ]);
+    const filteredTodos = useMemo(() => {
+        if(tab === "ACTIVE") {
+            return todos.filter(item => !item.isComplete);
+        }
+
+        if(tab === "COMPLETED") {
+            return todos.filter(item => item.isComplete);
+        }
+
+        return todos;
+    }, [ todos, tab ]);
+
+    const leftTodos = useMemo(() => todos.filter(item => !item.isComplete).length, [ todos ]);
+
+    const itemBg = useMemo(() => {
+        return isLightTheme ? styles.LightBg : styles.darkBg;
+    }, [ isLightTheme ])
 
     const getKey = useCallback((item, index) => `${index}-${id}`, []);
-    const getItem = useCallback(({ item }) => <ListItem { ...item } />, [])
+    const getItem = useCallback(({ item }) => <ListItem { ...item } />, []);
+    const changeTab = useCallback(prop => () => setTab(prop), []);
     
     return (
         <View style={[ styles.container, isLightTheme ? styles.containerLight : styles.containerDark ]}>
@@ -51,10 +71,21 @@ const Home = () => {
                 <View style={styles.todosListContainer}>
                     <View style={styles.flatListContainer}>
                         <FlatList
-                            data={todos}
+                            data={filteredTodos}
                             keyExtractor={getKey}
                             renderItem={getItem} 
                         />
+                    </View>
+                    <View style={[ styles.item, styles.row, itemBg ]}>
+                        <Text>{ leftTodos } item{ leftTodos > 1 ? "s" : ""} left</Text>
+                        <TouchableOpacity>
+                            <Text>Clear Completed</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={[ styles.item, styles.tabsContainer, itemBg ]}>
+                        <Tab id="ALL" label="All" onPress={changeTab("ALL")} selectedTab={tab} />
+                        <Tab id="ACTIVE" label="Active" onPress={changeTab("ACTIVE")} selectedTab={tab} />
+                        <Tab id="COMPLETED" label="Completed" onPress={changeTab("COMPLETED")} selectedTab={tab} />
                     </View>
                 </View>
             </View>
@@ -100,12 +131,34 @@ const styles = StyleSheet.create({
         left: "5%",
         position: "absolute",
         top: 0,
-        transform: "translate(0, -40%)",
+        transform: "translate(0, -30px)",
         width: "90%"
     },
     flatListContainer: {
         borderRadius: 5,
         overflow: "hidden"
+    },
+    item: {
+        paddingHorizontal: "5%",
+        paddingVertical: ".7rem"
+    },
+    darkBg: {
+        backgroundColor: darkBlue
+    },
+    LightBg: {
+        backgroundColor: "#FFF"
+    },
+    row: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    footerDarkTheme: {
+        backgroundColor: darkBlue
+    },
+    tabsContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: "2rem"
     }
 });
 
