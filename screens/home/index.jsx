@@ -83,11 +83,17 @@ const Home = () => {
             <View style={styles.todosContainer}>
                 <View style={styles.todosListContainer}>
                     <View style={styles.flatListContainer}>
-                        <FlatList
-                            data={filteredTodos}
-                            keyExtractor={getKey}
-                            renderItem={getItem} 
-                        />
+                        { filteredTodos.length === 0 ? (
+                            <View style={[ styles.item, styles.row, itemBg ]}>
+                                <Text>Empty</Text>
+                            </View>
+                        ) : 
+                            <FlatList
+                                data={filteredTodos}
+                                keyExtractor={getKey}
+                                renderItem={getItem} 
+                            />
+                        }
                     </View>
                     <View style={[ styles.item, styles.row, itemBg ]}>
                         <Text style={styles.grayColor}>{ leftTodos } item{ leftTodos > 1 ? "s" : ""} left</Text>
@@ -138,7 +144,8 @@ const styles = StyleSheet.create({
         width: 20
     },
     todosContainer: {
-        position: "relative"
+        position: "relative",
+        paddingBottom: "2rem"
     },
     todosListContainer: {
         left: "5%",

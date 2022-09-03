@@ -10,7 +10,7 @@ import { useLazyFetch } from "../../hooks"
 
 const { darkBlue, lightGray } = colors;
 
-const ListItem = ({ ID, isComplete, refresh, task }) => {
+const ListItem = ({ ID, isComplete, position, refresh, task }) => {
     const { isLightTheme } = useContext(ThemeContext);
     const { lazyFetch } = useLazyFetch()
     
@@ -29,12 +29,26 @@ const ListItem = ({ ID, isComplete, refresh, task }) => {
         })
     }, [ ID, lazyFetch, refresh ]);
 
+    const editHandler = useCallback(() => {
+        const options = {
+            body: JSON.stringify({  isComplete: !isComplete, task, position }),
+            method: "PATCH"
+        };
+
+        lazyFetch({ 
+            options,
+            onError: refresh,
+            url: `https://pro-todos.netlify.app/api/todos/${ID}`
+        })
+    }, [ ID, isComplete, lazyFetch, position, task ]);
+
     return (
         <View style={[ styles.container, isLightTheme ? lightThemeContainer : darkThemeContainer ]}>
             <Checkbox
                 style={styles.checkbox}
                 value={isComplete}
                 color={isComplete ? '#4630EB' : undefined}
+                onChange={editHandler}
             />
             <Text style={[ styles.text, isLightTheme ? "" : styles.lightText ]}>
                 { task }
