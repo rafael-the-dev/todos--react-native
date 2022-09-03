@@ -1,19 +1,46 @@
-import { useCallback, useContext, useState } from "react"
+import { useCallback, useContext, useEffect, useRef, useState } from "react"
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import Checkbox from 'expo-checkbox';
 import { MaterialIcons } from '@expo/vector-icons'; 
 
 import { colors } from "../../styles/colors"; 
+import { useLazyFetch  } from "../../hooks";
 import { ThemeContext } from "../../context";
 
 const { darkBlue, gray } = colors;
 
-const Form = () => {
+const Form = ({ refresh }) => {
     const [ value, setValue ] = useState("");
     const [ isChecked, setIsChecked ] = useState(false);
-    const { isLightTheme } = useContext(ThemeContext)
+    const { isLightTheme } = useContext(ThemeContext);
+
+    const valueRef = useRef("");
+    const checkedRef = useRef(false);
+
+    const { lazyFetch } = useLazyFetch();
 
     const changeHandler = useCallback(text => setValue(text), []);
+
+    const submitHandler = useCallback(() => {
+        const options = {
+            body: JSON.stringify({ isComplete: checkedRef.current, task: valueRef.current }),
+            method: "POST"
+        };
+
+        lazyFetch({
+            options, 
+            onSuccess: () => { refresh() },
+            url: "https://pro-todos.netlify.app/api/todos"
+        })
+    }, [ lazyFetch ]);
+
+    useEffect(() => {
+        valueRef.current = value;
+    }, [ value ]);
+
+    useEffect(() => {
+        checkedRef.current = isChecked;
+    }, [ isChecked ])
 
     return (
         <View style={[ styles.container, isLightTheme ? styles.lightBg : styles.darkBg ]}>
@@ -29,7 +56,7 @@ const Form = () => {
                 style={[ styles.input, isLightTheme ? styles.lightInputColor : styles.darkInputColor ]}
                 value={value}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={submitHandler}>
                 <MaterialIcons name="send" size={17} color="#76B6FC" />
             </TouchableOpacity>
         </View>

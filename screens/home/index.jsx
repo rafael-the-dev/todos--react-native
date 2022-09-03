@@ -21,7 +21,7 @@ const Home = () => {
     const id = useId();
     const { isLightTheme, toggleTheme } = useContext(ThemeContext);
 
-    const { data, error, loading } = useFetch({ 
+    const { data, error, fetchData, loading } = useFetch({ 
         autoFetch: true, 
         url: "https://pro-todos.netlify.app/api/todos" 
     });
@@ -47,7 +47,7 @@ const Home = () => {
     }, [ isLightTheme ])
 
     const getKey = useCallback((item, index) => `${index}-${id}`, []);
-    const getItem = useCallback(({ item }) => <ListItem { ...item } />, []);
+    const getItem = useCallback(({ item }) => <ListItem { ...item } refresh={fetchData} />, [ fetchData ]);
     const changeTab = useCallback(prop => () => setTab(prop), []);
     
     return (
@@ -65,7 +65,7 @@ const Home = () => {
                         />
                     </TouchableOpacity>
                 </View>
-                <Form />
+                <Form refresh={fetchData} />
             </ImageBackground>
             <View style={styles.todosContainer}>
                 <View style={styles.todosListContainer}>
