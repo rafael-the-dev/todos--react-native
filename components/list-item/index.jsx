@@ -23,9 +23,9 @@ const ListItem = ({ ID, isComplete, refresh, task }) => {
         };
 
         lazyFetch({ 
-            url: `https://pro-todos.netlify.app/api/todos/${ID}`,
             options,
-            onSuccess: refresh
+            onError: refresh,
+            url: `https://pro-todos.netlify.app/api/todos/${ID}`
         })
     }, [ ID, lazyFetch, refresh ]);
 

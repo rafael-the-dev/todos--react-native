@@ -29,7 +29,7 @@ const Form = ({ refresh }) => {
 
         lazyFetch({
             options, 
-            onError: () => { refresh(); },
+            onError: () => { setValue(""); refresh(); },
             url: "https://pro-todos.netlify.app/api/todos"
         })
     }, [ lazyFetch ]);

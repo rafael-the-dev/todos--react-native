@@ -8,7 +8,7 @@ import iconSun from "../../assets/images/icon-sun.svg";
 
 import { ThemeContext } from '../../context';
 import { colors } from "../../styles/colors";
-import { useFetch } from '../../hooks';
+import { useFetch, useLazyFetch } from '../../hooks';
 
 import Form from '../../components/form';
 import ListItem from '../../components/list-item';
@@ -21,6 +21,7 @@ const Home = () => {
     const id = useId();
     const { isLightTheme, toggleTheme } = useContext(ThemeContext);
 
+    const { lazyFetch } = useLazyFetch();
     const { data, error, fetchData, loading } = useFetch({ 
         autoFetch: true, 
         url: "https://pro-todos.netlify.app/api/todos" 
@@ -49,6 +50,18 @@ const Home = () => {
     const getKey = useCallback((item, index) => `${index}-${id}`, []);
     const getItem = useCallback(({ item }) => <ListItem { ...item } refresh={fetchData} />, [ fetchData ]);
     const changeTab = useCallback(prop => () => setTab(prop), []);
+
+    const deleteCompleted = useCallback(() => {
+        const options = {
+            method: "DELETE"
+        };
+
+        lazyFetch({
+            onError: fetchData,
+            options,
+            url: "https://pro-todos.netlify.app/api/todos?filter=completed" 
+        })
+    }, [ fetchData, lazyFetch ])
     
     return (
         <View style={[ styles.container, isLightTheme ? styles.containerLight : styles.containerDark ]}>
@@ -78,7 +91,7 @@ const Home = () => {
                     </View>
                     <View style={[ styles.item, styles.row, itemBg ]}>
                         <Text style={styles.grayColor}>{ leftTodos } item{ leftTodos > 1 ? "s" : ""} left</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={deleteCompleted}>
                             <Text style={styles.grayColor}>Clear Completed</Text>
                         </TouchableOpacity>
                     </View>
